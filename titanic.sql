@@ -3,26 +3,26 @@ USE titanic;
 
 CREATE TABLE IF NOT EXISTS `people` (
 id INT AUTO_INCREMENT PRIMARY KEY,
-`Uuid` VARCHAR(36) NULL,
-`Survived` INT NULL,
-`Pclass` INT NULL,
-`Name` VARCHAR(128) NULL,
-`Sex` VARCHAR(16) NULL,
-`Age` FLOAT NULL,
-`Siblings/Spouses Aboard` INT NULL,
-`Parents/Children Aboard` INT NULL,
-`Fare` FLOAT NULL,
-UNIQUE KEY Unique_Uuid (Uuid)
+`uuid` VARCHAR(36) NULL,
+`survived` INT NULL,
+`passengerClass` INT NULL,
+`name` VARCHAR(128) NULL,
+`sex` VARCHAR(16) NULL,
+`age` FLOAT NULL,
+`siblingsOrSpousesAboard` INT NULL,
+`parentsOrChildrenAboard` INT NULL,
+`fare` FLOAT NULL,
+UNIQUE KEY Unique_uuid (uuid)
 );
 
-INSERT INTO people (`Survived`,
-                    `Pclass`,
-                    `Name`,
-                    `Sex`,
-                    `Age`,
-                    `Siblings/Spouses Aboard`,
-                    `Parents/Children Aboard`,
-                    `Fare`
+INSERT INTO people (`survived`,
+                    `passengerClass`,
+                    `name`,
+                    `sex`,
+                    `age`,
+                    `siblingsOrSpousesAboard`,
+                    `parentsOrChildrenAboard`,
+                    `fare`
                     ) VALUES
 (0,3,'Mr. Owen Harris Braund','male',22,1,0,7.25),
 (1,1,'Mrs. John Bradley (Florence Briggs Thayer) Cumings','female',38,1,0,71.2833),
@@ -912,6 +912,6 @@ INSERT INTO people (`Survived`,
 (1,1,'Mr. Karl Howell Behr','male',26,0,0,30);
 
 
-UPDATE `people` SET Uuid=uuid() WHERE Uuid IS NULL;
-ALTER TABLE `people` MODIFY COLUMN `Uuid` VARCHAR(36) NOT NULL;
+UPDATE `people` SET uuid=uuid() WHERE uuid IS NULL;
+ALTER TABLE `people` MODIFY COLUMN `uuid` VARCHAR(36) NOT NULL;
 
