@@ -92,7 +92,7 @@ router.delete('/:id', async function (req, res, next) {
 	res.send(result)
 })
 
-router.get('/', async function (req, res) {
+router.get('/', async function (req, res, next) {
 	let result
 
 	try {

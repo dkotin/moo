@@ -1,0 +1,26 @@
+version: '3'
+
+volumes:
+  mysql_data:
+
+services:
+  http_api:
+    build: http_api/
+    restart: always
+    environment:
+      - HOST=mysql
+      - PORT=3306
+      - DB_USER=apiuser
+      - DB_PASSWORD=apipassword
+      - DB_NAME=titanic
+    ports:
+      - "8082:8081"
+
+  mysql:
+    build: mysql/
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "3308:3306"
