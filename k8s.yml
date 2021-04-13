@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs-apiserver
+spec:
+  selector:
+    matchLabels:
+      app: cs-apiserver
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cs-apiserver
+    spec:
+      containers:
+        - name: http-api
+          image: dockerized_http_api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          env:
+            - name: HOST
+              value: "mysql-service"
+            - name: PORT
+              value: "3306"
+            - name: DB_USER
+              value: "apiuser"
+            - name: DB_PASSWORD
+              value: "apipassword"
+            - name: DB_NAME
+              value: "titanic"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  labels:
+    run: web-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8081
+      protocol: TCP
+  selector:
+    app: cs-apiserver
+
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-data
+  labels:
+    app: mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: dockerized_mysql:latest
+          name: mysql
+          imagePullPolicy: Never
+          env:
+          - name: MYSQL_ALLOW_EMPTY_PASSWORD
+            value: "yes"
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-data
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  labels:
+    app: mysql
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      protocol: TCP
+  selector:
+    app: mysql
